@@ -1,0 +1,36 @@
+:root{--bg:#F5F4EF;--surface:#FFFFFF;--ink:#14201B;--ink2:#55625B;--line:#E6E3DA;--accent:#0F6B4F;--soft:#DCEEE6;--accentInk:#0B5A41}
+@media (prefers-color-scheme:dark){:root{--bg:#0F1613;--surface:#18221D;--ink:#EAF0EC;--ink2:#A6B3AB;--line:#2A3832;--accent:#5FCFA3;--soft:#1E3B30;--accentInk:#8FE0BD}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+a{color:var(--accent)}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+header{border-bottom:1px solid var(--line);background:var(--surface)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;color:var(--ink);text-decoration:none}
+.brand img{width:32px;height:32px;border-radius:8px}
+nav{display:flex;gap:18px;font-size:15px}
+nav a{color:var(--ink2);text-decoration:none}
+nav a:hover{color:var(--accent)}
+main{padding:40px 0 56px}
+h1{font-size:34px;line-height:1.2;margin:0 0 12px}
+h2{font-size:22px;margin:36px 0 8px}
+h3{font-size:17px;margin:22px 0 4px}
+p,li{color:var(--ink)}
+.lead{font-size:20px;color:var(--ink2);margin:0 0 28px}
+.muted{color:var(--ink2);font-size:15px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;margin:16px 0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
+.grid .card{margin:0}
+.grid h3{margin-top:0}
+.hero{background:var(--soft);border-radius:20px;padding:28px;margin:0 0 28px;display:flex;gap:20px;align-items:center}
+.hero img{width:84px;height:84px;border-radius:20px;flex:none}
+.hero h1{margin:0 0 6px}
+.hero p{margin:0;color:var(--accentInk)}
+.badge{display:inline-block;background:var(--accent);color:#fff;border-radius:999px;padding:6px 14px;font-size:14px;font-weight:600}
+@media (prefers-color-scheme:dark){.badge{color:#0F1613}}
+footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--ink2);font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between}
+footer a{color:var(--ink2)}
+dl{margin:0}dt{font-weight:600;margin-top:14px}dd{margin:2px 0 0;color:var(--ink2)}
+@media (max-width:600px){h1{font-size:28px}.grid{grid-template-columns:1fr}.hero{flex-direction:column;align-items:flex-start}nav{gap:12px;font-size:14px}}
