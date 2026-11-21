@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Geteiltes Objekt – Brick</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Mit Brick berechnetes Objekt, geteilt per Link.">
+<link rel="icon" href="../icon.png">
+<link rel="apple-touch-icon" href="../icon.png">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header><div class="wrap">
+<a class="brand" href="../"><img src="../icon.png" alt=""><span class="appname">Brick</span></a>
+<nav><a href="../support/">Support</a><a href="../datenschutz/">Datenschutz</a><a href="../impressum/">Impressum</a></nav>
+</div></header>
+<main><div class="wrap">
+
+<h1 id="titel">Geteiltes Objekt</h1>
+<p class="lead" id="status">Lade …</p>
+<div id="inhalt"></div>
+<p id="aktion" hidden><a class="badge" id="oeffnen" href="#">In <span class="appname">Brick</span> öffnen</a></p>
+<p class="muted">Diese Zahlen wurden mit <span class="appname">Brick</span> berechnet und mit dir geteilt. Sie stehen nur im Link und werden nicht an einen Server gesendet. <span class="appname">Brick</span> ist bald im App Store. Hast du die App schon, öffnet der Knopf das Objekt dort.</p>
+<p class="muted">Vereinfachte Berechnung vor Steuern auf Basis der Angaben des Absenders. Keine Anlage-, Rechts- oder Steuerberatung.</p>
+<script>
+(async function () {
+  var status = document.getElementById('status');
+  var hash = location.hash.slice(1);
+  if (!hash || !/^[A-Za-z0-9_-]+$/.test(hash) || hash.length > 30000) {
+    status.textContent = 'Dieser Link enthält kein Objekt.';
+    return;
+  }
+  try {
+    var b64 = hash.replace(/-/g, '+').replace(/_/g, '/');
+    while (b64.length % 4) b64 += '=';
+    var bin = atob(b64);
+    var bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    var stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+    var data = JSON.parse(await new Response(stream).text());
+    var name = (data.objekt && data.objekt.name) || 'Objekt';
+    document.getElementById('titel').textContent = name;
+    document.title = name + ' – Brick';
+    status.textContent = 'So wurde das Objekt berechnet:';
+    var box = document.getElementById('inhalt');
+    (data.abschnitte || []).forEach(function (a) {
+      var h = document.createElement('h2');
+      h.textContent = a.titel;
+      box.appendChild(h);
+      var card = document.createElement('div');
+      card.className = 'card';
+      (a.zeilen || []).forEach(function (z) {
+        var row = document.createElement('div');
+        row.className = 'zeile';
+        var l = document.createElement('span');
+        l.textContent = z[0];
+        var r = document.createElement('span');
+        r.textContent = z[1];
+        row.appendChild(l);
+        row.appendChild(r);
+        card.appendChild(row);
+      });
+      box.appendChild(card);
+    });
+    document.getElementById('oeffnen').href = 'brick://objekt?d=' + hash;
+    document.getElementById('aktion').hidden = false;
+  } catch (e) {
+    status.textContent = 'Der Link konnte nicht gelesen werden. Bitte öffne ihn in einem aktuellen Browser oder bitte um einen neuen Link.';
+  }
+})();
+</script>
+
+</div></main>
+<footer><div class="wrap">
+<span>© 2026 Philipp Bühl</span>
+<span><a href="../support/">Support</a> · <a href="../datenschutz/">Datenschutz</a> · <a href="../impressum/">Impressum</a></span>
+</div></footer>
+</body>
+</html>

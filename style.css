@@ -32,5 +32,10 @@ p,li{color:var(--ink)}
 footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--ink2);font-size:14px}
 footer .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between}
 footer a{color:var(--ink2)}
+.zeile{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid var(--line)}
+.zeile:last-child{border-bottom:0}
+.zeile span:first-child{color:var(--ink2)}
+.zeile span:last-child{font-weight:600;text-align:right}
+a.badge{text-decoration:none}
 dl{margin:0}dt{font-weight:600;margin-top:14px}dd{margin:2px 0 0;color:var(--ink2)}
 @media (max-width:600px){h1{font-size:28px}.grid{grid-template-columns:1fr}.hero{flex-direction:column;align-items:flex-start}nav{gap:12px;font-size:14px}}
