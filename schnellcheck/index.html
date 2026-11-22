@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Schnellcheck: Rendite und Cashflow einer Immobilie – Brick</title>
+<meta name="description" content="Kostenloser Schnellcheck: aus Kaufpreis und Kaltmiete grob Cashflow, Mietrendite und Kaufpreisfaktor einer Immobilie berechnen.">
+<link rel="icon" href="../icon.png">
+<link rel="apple-touch-icon" href="../icon.png">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header><div class="wrap">
+<a class="brand" href="../"><img src="../icon.png" alt=""><span class="appname">Brick</span></a>
+<nav><a href="../schnellcheck/">Schnellcheck</a><a href="../support/">Support</a><a href="../datenschutz/">Datenschutz</a><a href="../impressum/">Impressum</a></nav>
+</div></header>
+<main><div class="wrap">
+
+<h1>Schnellcheck</h1>
+<p class="lead">Zwei Zahlen genügen für eine erste Einschätzung einer Immobilie als Kapitalanlage.</p>
+
+<div class="rechner">
+<div class="gross"><label for="kp">Kaufpreis</label><input id="kp" inputmode="decimal" autocomplete="off" placeholder="zum Beispiel 250.000"></div>
+<div class="gross"><label for="mi">Kaltmiete pro Monat</label><input id="mi" inputmode="decimal" autocomplete="off" placeholder="zum Beispiel 900"></div>
+
+<details>
+<summary>Annahmen anzeigen und ändern</summary>
+<label for="bl">Bundesland (Grunderwerbsteuer)</label>
+<select id="bl"></select>
+<div class="zwei">
+<div><label for="ek">Eigenkapital in % der Gesamtinvestition</label><input id="ek" inputmode="decimal" value="20"></div>
+<div><label for="kosten">Nicht umlagefähige Kosten in % der Miete</label><input id="kosten" inputmode="decimal" value="20"></div>
+<div><label for="zins">Zinssatz in %</label><input id="zins" inputmode="decimal" value="3,5"></div>
+<div><label for="tilg">Anfängliche Tilgung in %</label><input id="tilg" inputmode="decimal" value="1,5"></div>
+<div><label for="notar">Notar und Grundbuch in %</label><input id="notar" inputmode="decimal" value="1,3"></div>
+<div><label for="makler">Makler in %</label><input id="makler" inputmode="decimal" value="3,57"></div>
+</div>
+</details>
+
+<div id="leer" class="card muted">Trag Kaufpreis und Kaltmiete ein, dann siehst du die Kennzahlen.</div>
+
+<div id="res" hidden>
+<div class="ergebnis">
+<div class="titel">Cashflow pro Monat (grob)</div>
+<div class="zahl" id="cf">–</div>
+<div class="muted" id="cfinfo"></div>
+</div>
+<div class="kacheln">
+<div class="kachel"><div class="k">Bruttomietrendite</div><div class="v" id="brutto">–</div></div>
+<div class="kachel"><div class="k">Nettomietrendite</div><div class="v" id="netto">–</div></div>
+<div class="kachel"><div class="k">Kaufpreisfaktor</div><div class="v" id="faktor">–</div><div class="u">× Jahresmiete</div></div>
+<div class="kachel"><div class="k">Kapitaldienstdeckung</div><div class="v" id="dscr">–</div></div>
+</div>
+</div>
+
+<p class="muted" style="margin-top:16px">Grobe Einschätzung mit Pauschalen, vor Steuern. Die Berechnung läuft in deinem Browser, es wird nichts gespeichert oder übertragen. Keine Anlage-, Rechts- oder Steuerberatung.</p>
+</div>
+
+<div class="cta">
+<h2>Mehr in der App</h2>
+<p><span class="appname">Brick</span> rechnet auch Fix &amp; Flip und zeigt Prognose, Tilgungsplan, Stresstest und das Maximalgebot. Mit einer Bankunterlage als PDF und dem Vergleich mehrerer Objekte.</p>
+<p><span class="badge">Bald im App Store</span></p>
+<p class="muted">Für iPhone und iPad. Eine Android-Version ist geplant.</p>
+</div>
+
+<script>
+(function () {
+  var BL = [["Baden-Württemberg",5],["Bayern",3.5],["Berlin",6],["Brandenburg",6.5],["Bremen",5.5],["Hamburg",5.5],["Hessen",6],["Mecklenburg-Vorpommern",6],["Niedersachsen",5],["Nordrhein-Westfalen",6.5],["Rheinland-Pfalz",5],["Saarland",6.5],["Sachsen",5.5],["Sachsen-Anhalt",5],["Schleswig-Holstein",6.5],["Thüringen",5]];
+  var $ = function (id) { return document.getElementById(id); };
+  var sel = $('bl');
+  BL.forEach(function (b, i) {
+    var o = document.createElement('option');
+    o.value = String(i);
+    o.textContent = b[0] + ' (' + String(b[1]).replace('.', ',') + ' %)';
+    if (b[0] === 'Hessen') o.selected = true;
+    sel.appendChild(o);
+  });
+  function zahl(t) {
+    var s = String(t).replace(/\./g, '').replace(',', '.').replace(/[^0-9.\-]/g, '');
+    var n = parseFloat(s);
+    return isFinite(n) ? n : 0;
+  }
+  function runde(x) { return Math.sign(x) * Math.round(Math.abs(x)); }
+  function eur(x) { return runde(x).toLocaleString('de-DE') + ' €'; }
+  function eurv(x) { var r = runde(x); return (r > 0 ? '+' : '') + r.toLocaleString('de-DE') + ' €'; }
+  function proz(x, n) { return x.toLocaleString('de-DE', {minimumFractionDigits: n, maximumFractionDigits: n}) + ' %'; }
+  function gruppe(el) {
+    var t = el.value.replace(/[^0-9,]/g, '');
+    var teile = t.split(',');
+    var ganz = teile[0].replace(/^0+(?=\d)/, '');
+    ganz = ganz.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    el.value = teile.length > 1 ? ganz + ',' + teile.slice(1).join('').slice(0, 2) : ganz;
+  }
+  function rechne() {
+    var kp = zahl($('kp').value), mi = zahl($('mi').value);
+    var ok = kp > 0 && mi > 0;
+    $('leer').hidden = ok;
+    $('res').hidden = !ok;
+    if (!ok) return;
+    var gew = BL[parseInt(sel.value, 10)][1];
+    var grest = runde(kp * gew / 100), notar = runde(kp * zahl($('notar').value) / 100), makler = runde(kp * zahl($('makler').value) / 100);
+    var gesamt = kp + grest + notar + makler;
+    var ek = runde(gesamt * Math.min(Math.max(zahl($('ek').value), 0), 100) / 100);
+    var darlehen = Math.max(gesamt - ek, 0);
+    var zins = zahl($('zins').value), tilg = zahl($('tilg').value);
+    var rate = runde(darlehen * (zins + tilg) / 100 / 12);
+    var kosten = mi * zahl($('kosten').value) / 100;
+    var netto = mi - kosten;
+    var cf = netto - rate;
+    var jahr = mi * 12;
+    $('cf').textContent = eurv(cf);
+    $('cf').className = 'zahl' + (cf < 0 ? ' minus' : '');
+    $('cfinfo').textContent = 'Gesamtinvestition ' + eur(gesamt) + ', Darlehen ' + eur(darlehen) + ', Rate ' + eur(rate) + ' pro Monat';
+    $('brutto').textContent = proz(jahr / kp * 100, 2);
+    $('netto').textContent = proz(netto * 12 / gesamt * 100, 2);
+    $('faktor').textContent = (kp / jahr).toLocaleString('de-DE', {minimumFractionDigits: 1, maximumFractionDigits: 1});
+    $('dscr').textContent = rate > 0 ? (netto / rate).toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '–';
+  }
+  ['kp', 'mi'].forEach(function (id) {
+    $(id).addEventListener('input', function () { gruppe($(id)); rechne(); });
+  });
+  ['bl', 'ek', 'kosten', 'zins', 'tilg', 'notar', 'makler'].forEach(function (id) {
+    $(id).addEventListener('input', rechne);
+  });
+  rechne();
+})();
+</script>
+
+</div></main>
+<footer><div class="wrap">
+<span>© 2026 Philipp Bühl</span>
+<span><a href="../support/">Support</a> · <a href="../datenschutz/">Datenschutz</a> · <a href="../impressum/">Impressum</a></span>
+</div></footer>
+</body>
+</html>

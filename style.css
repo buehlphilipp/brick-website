@@ -38,4 +38,23 @@ footer a{color:var(--ink2)}
 .zeile span:last-child{font-weight:600;text-align:right}
 a.badge{text-decoration:none}
 dl{margin:0}dt{font-weight:600;margin-top:14px}dd{margin:2px 0 0;color:var(--ink2)}
-@media (max-width:600px){h1{font-size:28px}.grid{grid-template-columns:1fr}.hero{flex-direction:column;align-items:flex-start}nav{gap:12px;font-size:14px}}
+.rechner label{display:block;font-size:14px;font-weight:600;color:var(--ink2);margin:14px 0 6px}
+.rechner input,.rechner select{width:100%;font:inherit;font-size:18px;font-weight:600;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-height:50px}
+.rechner input:focus,.rechner select:focus{outline:2px solid var(--accent);outline-offset:1px}
+.rechner .gross input{font-size:26px;min-height:62px;border:2px solid var(--accent)}
+.rechner .zwei{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.rechner details{margin:18px 0}
+.rechner summary{cursor:pointer;font-weight:600;color:var(--accentInk)}
+.ergebnis{background:var(--soft);border-radius:18px;padding:20px;margin:22px 0 14px}
+.ergebnis .titel{font-size:14px;font-weight:600;color:var(--accentInk)}
+.ergebnis .zahl{font-size:38px;font-weight:700;color:var(--accentInk);line-height:1.2}
+.ergebnis .zahl.minus{color:#A03D14}
+@media (prefers-color-scheme:dark){.ergebnis .zahl.minus{color:#FF9A6B}}
+.kacheln{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.kachel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px}
+.kachel .k{font-size:13px;color:var(--ink2);font-weight:600}
+.kachel .v{font-size:24px;font-weight:700}
+.kachel .u{font-size:13px;color:var(--ink2)}
+.cta{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;margin:28px 0}
+.cta h2{margin-top:0}
+@media (max-width:600px){.rechner .zwei{grid-template-columns:1fr}header .wrap{height:auto;flex-wrap:wrap;padding-top:10px;padding-bottom:10px;gap:6px 16px}nav{flex-wrap:wrap}h1{font-size:28px}.grid{grid-template-columns:1fr}.hero{flex-direction:column;align-items:flex-start}nav{gap:12px;font-size:14px}}
